@@ -10,74 +10,37 @@ import {
 } from '@nestjs/common';
 
 import { CreateUserDto } from './user.dto';
-interface User {
-  id?: string;
-  name: string;
-  email: string;
-}
+
+import type { User } from './user.model';
+
+import { UsersService } from './users.service';
+
 @Controller('users')
 export class UsersController {
-  private users: User[] = [
-    {
-      id: '1',
-      name: 'jhon doe',
-      email: 'jhondoe@example.com',
-    },
-    {
-      id: '2',
-      name: 'janem doe',
-      email: 'jane.doe@example.com',
-    },
-  ];
+  constructor(private usersService: UsersService) {}
 
   @Get()
   getUsers() {
-    return this.users;
+    return this.usersService.findAll();
   }
 
   @Get(':id')
   findUser(@Param('id') id: string) {
-    const user: User | undefined = this.users.find((u: User) => u.id === id);
-
-    if (!user) {
-      return {
-        error: 'User not found',
-      };
-    }
-    return user;
+    return this.usersService.getUserById(id);
   }
 
   @Post()
   createUser(@Body() body: CreateUserDto): User {
-    this.users.push({
-      ...body,
-      id: `${this.users.length + 1}`,
-    });
-    return this.users[this.users.length - 1];
+    return this.usersService.create(body);
   }
 
   @Delete(':id')
   deleteUser(@Param('id') id: string) {
-    this.users = this.users.filter((user) => user.id !== id);
-    return {
-      message: 'User deleted',
-    };
+    return this.usersService.delete(id);
   }
 
   @Put(':id')
   updateUser(@Param('id') id: string, @Body() changes: User) {
-    const position = this.users.findIndex((user) => user.id === id);
-    if (position === -1) {
-      throw new NotFoundException('User not found');
-    }
-
-    const currentUser = this.users[position];
-    const updatedUser = {
-      ...currentUser,
-      ...changes,
-    };
-
-    this.users[position] = updatedUser;
-    return updatedUser;
+    return this.usersService.update(id, changes);
   }
 }
