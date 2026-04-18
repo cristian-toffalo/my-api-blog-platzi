@@ -6,6 +6,7 @@ import {
   Post,
   Delete,
   Put,
+  ParseIntPipe,
   NotFoundException,
 } from '@nestjs/common';
 
@@ -25,22 +26,22 @@ export class UsersController {
   }
 
   @Get(':id')
-  findUser(@Param('id') id: string) {
+  findUser(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.getUserById(id);
   }
 
   @Post()
-  createUser(@Body() body: CreateUserDto): User {
-    return this.usersService.create(body);
+  createUser(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: string) {
+  deleteUser(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.delete(id);
   }
 
   @Put(':id')
-  updateUser(@Param('id') id: string, @Body() changes: User) {
+  updateUser(@Param('id', ParseIntPipe) id: number, @Body() changes: User) {
     return this.usersService.update(id, changes);
   }
 }
