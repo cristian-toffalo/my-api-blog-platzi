@@ -7,7 +7,6 @@ import {
   Delete,
   Put,
   ParseIntPipe,
-  NotFoundException,
 } from '@nestjs/common';
 
 import { CreateUserDto } from './user.dto';
