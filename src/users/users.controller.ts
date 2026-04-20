@@ -9,7 +9,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 
-import { CreateUserDto } from './user.dto';
+import { CreateUserDto, UpdateUserDto } from './dtos/user.dto';
 
 import type { User } from './user.model';
 
@@ -40,7 +40,15 @@ export class UsersController {
   }
 
   @Put(':id')
-  updateUser(@Param('id', ParseIntPipe) id: number, @Body() changes: User) {
+  updateUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() changes: UpdateUserDto,
+  ) {
     return this.usersService.update(id, changes);
+  }
+
+  @Get(':id/profile')
+  getProfile(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.getProfileByUserId(id);
   }
 }

@@ -7,20 +7,8 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-
-export class createProfileDto {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
-  @IsString()
-  @IsNotEmpty()
-  lastName: string;
-
-  @IsString()
-  @IsOptional()
-  avatar: string;
-}
+import { createProfileDto, UpdateProfileDto } from './profile.dto';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
 
 export class CreateUserDto {
   @IsString()
@@ -38,13 +26,10 @@ export class CreateUserDto {
   profile: createProfileDto;
 }
 
-export class UpdateUserDto {
-  @IsString()
-  @IsOptional()
-  @MinLength(8)
-  password: string;
-
-  @IsEmail()
-  @IsOptional()
-  email: string;
+export class UpdateUserDto extends PartialType(
+  OmitType(CreateUserDto, ['profile'])) {
+   @ValidateNested()
+  @Type(() => UpdateProfileDto)
+  @IsNotEmpty()
+  profile: UpdateProfileDto;
 }
