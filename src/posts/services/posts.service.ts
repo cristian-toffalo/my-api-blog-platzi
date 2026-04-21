@@ -1,10 +1,13 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreatePostDto } from '../dto/create-post.dto';
+import { UpdatePostDto } from '../dto/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Post } from './entities/post.entity';
-import { userInfo } from 'os';
+import { Post } from '../entities/post.entity';
 
 @Injectable()
 export class PostsService {
@@ -14,7 +17,7 @@ export class PostsService {
 
   async findAll() {
     const posts = await this.postsRepository.find({
-      relations: ['user.profile'],
+      relations: ['user.profile', 'categories'],
     });
     return posts;
   }
@@ -22,7 +25,7 @@ export class PostsService {
   async findOne(id: number) {
     const post = await this.postsRepository.findOne({
       where: { id },
-      relations: ['user.profile'],
+      relations: ['user.profile', 'categories'],
     });
 
     if (!post) {
@@ -36,7 +39,8 @@ export class PostsService {
     try {
       const newPost = await this.postsRepository.save({
         ...body,
-        user: { id: body.userId }
+        user: { id: body.userId },
+        categories: body.categoryIds?.map((id) => ({ id }))
       });
       return this.findOne(newPost.id);
     } catch {
