@@ -48,13 +48,21 @@ export class UsersService {
     } catch {
       throw new BadRequestException('Error updating user');
     }
-
   }
 
   async delete(id: number) {
     const user = await this.findOne(id);
     await this.usersRepository.delete(user.id);
     return { message: 'User deleted' };
+  }
+
+  async getPostsUserById(id: number) {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['posts']
+    });
+
+    return user?.posts;
   }
 
   private async findOne(id: number) {
