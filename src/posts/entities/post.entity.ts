@@ -28,7 +28,7 @@ export class Post {
   // @Column({})
   // authorId: number;
 
-  @Column({ type: 'varchar', length: 255, name: 'cover_image', nullable: true })
+  @Column({ type: 'varchar', length: 800, name: 'cover_image', nullable: true })
   coverImage: string;
 
   @Column({ type: 'varchar', length: 255, name: 'summary', nullable: true })
