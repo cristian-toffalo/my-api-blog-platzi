@@ -1,6 +1,7 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -27,5 +28,6 @@ async function bootstrap() {
   });
 
   await app.listen(process.env.PORT ?? 3000);
+  app.use(helmet());
 }
 bootstrap();
