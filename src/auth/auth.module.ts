@@ -7,6 +7,7 @@ import { UsersModule } from '../users/users.module';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AuthController } from './controllers/auth.controller';
 import { Env } from '../env.model';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 
 @Module({
@@ -23,10 +24,9 @@ import { Env } from '../env.model';
         secret: configService.get<string>('JWT_SECRET', { infer: true }),
         signOptions: { expiresIn: '6d' },
       })
-
     }),
   ],
-  providers: [AuthService, LocalStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}
