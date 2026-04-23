@@ -12,15 +12,17 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PostsService } from './../services/posts.service';
 import { CreatePostDto } from './../dto/create-post.dto';
 import { UpdatePostDto } from './../dto/update-post.dto';
 import { Payload } from 'src/auth/models/payload.model';
-
+import { Post as PostEntity} from '../entities/post.entity';
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
+  @ApiOperation({ summary: 'Create a new post' })
   @UseGuards(AuthGuard('jwt'))
   @Post()
   create(@Body() createPostDto: CreatePostDto, @Req() req: Request) {
@@ -30,16 +32,21 @@ export class PostsController {
     return this.postsService.create(createPostDto, userId);
   }
 
+  @ApiOperation({ summary: 'Get all the post' })
+  @ApiResponse({ status: 200, description: 'Get all posts' })
   @Get()
   findAll() {
     return this.postsService.findAll();
   }
 
+  @ApiOperation({ summary: 'Get a post by Id' })
+  @ApiResponse({ status: 200, description: 'Get the post', type: PostEntity })
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.findOne(id);
   }
 
+  @ApiOperation({ summary: 'Update a Post' })
   @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   update(
@@ -49,6 +56,7 @@ export class PostsController {
     return this.postsService.update(id, updatePostDto);
   }
 
+  @ApiOperation({ summary: 'Delete a Post' })
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   remove(@Param('id') id: string) {
