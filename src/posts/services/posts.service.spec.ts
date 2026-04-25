@@ -133,7 +133,32 @@ describe('PostsService', () => {
     );
   });
 
-  // it('should update a Post', async () => {
+  it('should update a Post', async () => {
+    const post = posts[0];
+    const changes = {
+      title: 'New title for post 1',
+    };
+    const merged = {
+      ...post,
+      ...changes
+    };
 
-  // });
+    repository.findOne.mockResolvedValue(post);
+    repository.merge.mockReturnValue(merged);
+    repository.save.mockResolvedValue(merged);
+
+    await expect(service.update(post.id, changes)).resolves.toEqual(merged);
+    expect(repository.merge).toHaveBeenCalledWith(post, changes);
+    expect(repository.save).toHaveBeenCalledWith(merged);
+  });
+
+  it('should delete a Post', async () => {
+    const post = posts[0];
+    repository.findOne.mockResolvedValue(post);
+    repository.delete.mockResolvedValue({ affected: 1 });
+    await expect(service.remove(post.id)).resolves.toEqual({
+      message: 'Post deleted',
+    });
+    expect(repository.delete).toHaveBeenCalledWith(post.id);
+  });
 });

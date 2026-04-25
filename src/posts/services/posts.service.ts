@@ -68,7 +68,7 @@ export class PostsService {
   async getPostByCategoryId(categoryId: number) {
     const posts = await this.postsRepository.find({
       where: { categories: { id: categoryId } },
-      relations: ['user.profile']
+      relations: ['user.profile'],
     });
 
     return posts;
